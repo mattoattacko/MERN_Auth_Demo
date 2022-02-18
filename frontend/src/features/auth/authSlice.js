@@ -1,3 +1,5 @@
+//Heres our reducers and initial state pertaining to authtication
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authService from './authService'
 
@@ -5,8 +7,8 @@ import authService from './authService'
 const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
-  user: user ? user : null,
-  isError: false,
+  user: user ? user : null, //if there is a user in localStorage, set it to user, otherwise set it to null
+  isError: false, //if we get an error back from the server, then "isError" becomes true.
   isSuccess: false,
   isLoading: false,
   message: '',
@@ -18,7 +20,7 @@ export const register = createAsyncThunk(
   async (user, thunkAPI) => {
     try {
       return await authService.register(user)
-    } catch (error) {
+    } catch (error) { // the errors could come from anywhere, so we need to check for them in multiple places.
       const message =
         (error.response &&
           error.response.data &&
@@ -51,28 +53,31 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    reset: (state) => {
+    reset: (state) => { //resets things to their initial values
+      //we want to dispatch this function after we register or login
       state.isLoading = false
       state.isSuccess = false
       state.isError = false
       state.message = ''
     },
   },
+
+  // we need to account for pending state, fulfilled, and rejected if there is an error.
   extraReducers: (builder) => {
     builder
       .addCase(register.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true //true because its pending and fetching the data.
       })
-      .addCase(register.fulfilled, (state, action) => {
-        state.isLoading = false
+      .addCase(register.fulfilled, (state, action) => { // we get data back when its fulfilled, such as the user token
+        state.isLoading = false 
         state.isSuccess = true
-        state.user = action.payload
+        state.user = action.payload //action.payload is the payload (eg: user token)
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
-        state.message = action.payload
-        state.user = null
+        state.message = action.payload //thunks 'rejectWithValue' will return the reject message as its payload
+        state.user = null // we set the user to null because something obviously went wrong when registering.
       })
       .addCase(login.pending, (state) => {
         state.isLoading = true
@@ -94,5 +99,5 @@ export const authSlice = createSlice({
   },
 })
 
-export const { reset } = authSlice.actions
+export const { reset } = authSlice.actions //allows us to bring 'reset' into components where we want to fire it off.
 export default authSlice.reducer

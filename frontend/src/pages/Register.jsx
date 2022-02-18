@@ -17,11 +17,13 @@ function Register() {
 
   const { name, email, password, password2 } = formData
 
+  // Initializes navigate and dispatch
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  // Selects the stuff we want from state
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
+    (state) => state.auth // we need to specify the slice of state we want to use
   )
 
   useEffect(() => {
@@ -29,12 +31,13 @@ function Register() {
       toast.error(message)
     }
 
-    if (isSuccess || user) {
+    if (isSuccess || user) { //if we are successful or if we are logged in, that user will include the token and some other stuff, and then we navigate them to the dashboard.
       navigate('/')
     }
 
-    dispatch(reset())
-  }, [user, isError, isSuccess, message, navigate, dispatch])
+    dispatch(reset()) // resets state to default values
+
+  }, [user, isError, isSuccess, message, navigate, dispatch]) //if anything in this dependency array changes, it will fire the useEffect
 
   // in onChange, we are setting the state of the form fields.
   // this allows us to update the state of the form fields as the user types.
@@ -48,19 +51,20 @@ function Register() {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if (password !== password2) {
+    if (password !== password2) { // checks for password match
       toast.error('Passwords do not match')
     } else {
-      const userData = {
+      const userData = { // we want to try and register the user
         name,
         email,
         password,
       }
 
-      dispatch(register(userData))
+      dispatch(register(userData)) // dispatch the register function (brought in from "authSlice") and pass in the user
     }
   }
 
+  // Checks if we are loading
   if (isLoading) {
     return <Spinner />
   }
