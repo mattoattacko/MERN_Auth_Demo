@@ -61,7 +61,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      token: generateToken(user._id), // honestly we only really need the token, the other 3 above are just for us to see.
     })
   } else {
     res.status(400)
@@ -73,14 +73,18 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-  const { _id, name, email } = await User.findById(req.user.id) //req.user.id is the id from the token, which we put in the payload. We set it in the protect middleware.
-  // 'req.user.id' would be whichever user is authenticated. 
+  // const { _id, name, email } = await User.findById(req.user.id) //req.user.id is the id from the token, which we put in the payload. We set it in the protect middleware.
+  // // 'req.user.id' would be whichever user is authenticated. 
 
-  res.status(200).json({ // when a user is logged in and they hit this route, we want to send back the user data.
-    id: _id,
-    name,
-    email,
-  })
+  // res.status(200).json({ // when a user is logged in and they hit this route, we want to send back the user data.
+  //   id: _id,
+  //   name,
+  //   email,
+  // })
+
+  //above is commented out (but works) because we are already getting the user with our middleware and we don't need to do it again. We can just send back everything.
+  res.status(200).json(req.user)
+
 })
 
 // Generate JWT

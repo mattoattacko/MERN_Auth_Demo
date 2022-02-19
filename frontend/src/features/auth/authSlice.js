@@ -65,6 +65,8 @@ export const authSlice = createSlice({
   // we need to account for pending state, fulfilled, and rejected if there is an error.
   extraReducers: (builder) => {
     builder
+
+      // Register user
       .addCase(register.pending, (state) => {
         state.isLoading = true //true because its pending and fetching the data.
       })
@@ -79,13 +81,15 @@ export const authSlice = createSlice({
         state.message = action.payload //thunks 'rejectWithValue' will return the reject message as its payload
         state.user = null // we set the user to null because something obviously went wrong when registering.
       })
+
+      // Login 
       .addCase(login.pending, (state) => {
         state.isLoading = true
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.user = action.payload
+        state.user = action.payload //action.payload is the response from the backend
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false
@@ -93,7 +97,9 @@ export const authSlice = createSlice({
         state.message = action.payload
         state.user = null
       })
-      .addCase(logout.fulfilled, (state) => {
+
+      // Logout
+      .addCase(logout.fulfilled, (state) => { //if logout is fulfilled, we set the user to null. Without this, we would need to reload for logout to occur.
         state.user = null
       })
   },

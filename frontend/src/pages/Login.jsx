@@ -6,6 +6,8 @@ import { toast } from 'react-toastify'
 import { login, reset } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
 
+// All of this was copied over from register. The only difference is that we are not creating a user, we are validating it in the backend.
+
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
@@ -40,7 +42,7 @@ function Login() {
     }))
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = (e) => { // "onSubmit" is where we dispatch the "login" function
     e.preventDefault()
 
     const userData = {

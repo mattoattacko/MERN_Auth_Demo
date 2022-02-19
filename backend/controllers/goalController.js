@@ -48,16 +48,18 @@ const updateGoal = asyncHandler(async (req, res) => {
     throw new Error('Goal not found')
   }
 
-  const user = await User.findById(req.user.id) // gets the user that is logged in.
+  // const user = await User.findById(req.user.id) // gets the user that is logged in.
+  // above code works, but all we need is the user id.
+  // we remove it and add 'req' to 'user.id' in the code below  '!user' -> '!req.user' and '!== user.id' -> '!== req.user.id'
 
   // Check for user
-  if (!user) { 
+  if (!req.user) { 
     res.status(401)
     throw new Error('User not found')
   }
 
   // Make sure the logged in user matches the goal user
-  if (goal.user.toString() !== user.id) { // "goal" has a "user" field on it, which is an object ID (user). We need to convert it to a string before we check it.
+  if (goal.user.toString() !== req.user.id) { // "goal" has a "user" field on it, which is an object ID (user). We need to convert it to a string before we check it.
     res.status(401)
     throw new Error('User not authorized')
   }
@@ -82,16 +84,16 @@ const deleteGoal = asyncHandler(async (req, res) => {
     throw new Error('Goal not found')
   }
 
-  const user = await User.findById(req.user.id)
+  // const user = await User.findById(req.user.id) // removed for reasons stated in line 53
 
   // Check for user
-  if (!user) {
+  if (!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
   // Make sure the logged in user matches the goal user
-  if (goal.user.toString() !== user.id) {
+  if (goal.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
