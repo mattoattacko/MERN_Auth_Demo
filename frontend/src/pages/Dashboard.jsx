@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux' // need to get user from state
+import { useSelector, useDispatch } from 'react-redux' // need to get user from state. Need useDispatch to get goals
 import GoalForm from '../components/GoalForm'
 import GoalItem from '../components/GoalItem'
 import Spinner from '../components/Spinner'
@@ -12,7 +12,8 @@ function Dashboard() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user } = useSelector((state) => state.auth) //gets our user from state. It takes in a function with our state, and we define which part of the state we want it from (the auth).
+  const { user } = useSelector((state) => state.auth) //gets our "user" from state. It takes in a function with our state, and we define which part of the state we want it from (the auth).
+
   const { goals, isLoading, isError, message } = useSelector(
     (state) => state.goals
   )
@@ -26,12 +27,12 @@ function Dashboard() {
       navigate('/login')
     }
 
-    dispatch(getGoals())
+    dispatch(getGoals()) // get goals from the server. aka fetches our goals from the backend. Then we put it in the above 'const' so we have access to it.
 
-    return () => {
+    return () => { //resets the state on unmount, so when we leave the dashboard we want the goals to clear. 
       dispatch(reset())
     }
-  }, [user, navigate, isError, message, dispatch])
+  }, [user, navigate, isError, message, dispatch]) //dependencies array. If anything in this array changes, it will fire the useEffect
 
   if (isLoading) {
     return <Spinner />
@@ -47,7 +48,7 @@ function Dashboard() {
       <GoalForm />
 
       <section className='content'>
-        {goals.length > 0 ? (
+        {goals.length > 0 ? ( // if there are goals, we want to display them
           <div className='goals'>
             {goals.map((goal) => (
               <GoalItem key={goal._id} goal={goal} />

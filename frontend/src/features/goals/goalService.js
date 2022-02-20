@@ -23,10 +23,10 @@ const getGoals = async (token) => {
     },
   }
 
-  const response = await axios.get(API_URL, config)
+  const response = await axios.get(API_URL, config) //no need to send data as above, just need to pass in the config. The config has our token
 
   return response.data
-}
+} 
 
 // Delete user goal
 const deleteGoal = async (goalId, token) => {

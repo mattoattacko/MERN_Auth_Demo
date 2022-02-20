@@ -31,14 +31,14 @@ export const createGoal = createAsyncThunk( // createAsyncThunk is a function th
 // Get user goals
 export const getGoals = createAsyncThunk(
   'goals/getAll',
-  async (_, thunkAPI) => {
+  async (_, thunkAPI) => { //Since we are just getting goals, we dont need to pass anything in, but we do want the thunk API. So we pass in an underscore and thunkAPI as arguments.
     try {
-      const token = thunkAPI.getState().auth.user.token
+      const token = thunkAPI.getState().auth.user.token // auth is the part of the state we want, then we have a user in the state, and then we have a token on the user 
       return await goalService.getGoals(token)
     } catch (error) {
       const message =
         (error.response &&
-          error.response.data &&
+          error.response.data && 
           error.response.data.message) ||
         error.message ||
         error.toString()
@@ -106,8 +106,8 @@ export const goalSlice = createSlice({
       .addCase(deleteGoal.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.goals = state.goals.filter(
-          (goal) => goal._id !== action.payload.id
+        state.goals = state.goals.filter( //without doing this, the goal would not vanish from the UI displayed list until we reloaded the page. 
+          (goal) => goal._id !== action.payload.id // for each goal where the "_id" is not equal to the id of the goal we just deleted, we want to keep it. So we only show goals that are not equal to that.
         )
       })
       .addCase(deleteGoal.rejected, (state, action) => {
